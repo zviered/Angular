@@ -1,12 +1,14 @@
 
-<md-menu #appMenu="mdMenu" yPosition="above">
+<input type="file" (change)="fileChange($event)" placeholder="Upload file">
+
+<!--md-menu #appMenu="mdMenu" yPosition="above">
   <button md-menu-item (click)="openFile()"> Open... </button>
   <button md-menu-item (click)="help()"> Help </button>
 </md-menu>
 
 <button md-icon-button [mdMenuTriggerFor]="appMenu">
   <md-icon>File</md-icon>
-</button>
+</button-->
 
 <!--md-tab-group>
   <md-tab label="One">
@@ -18,7 +20,7 @@
     <p>...</p>
   </md-tab>
 </md-tab-group-->
-<br><br/>
+<br/><br>
 
 <div class="page-header">
   <div class="container">
