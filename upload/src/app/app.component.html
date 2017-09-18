@@ -1,7 +1,7 @@
 <div>
-  <input name="myFile" type="file" #todoText>
+  <input type="file" (change)="fileChange($event)" placeholder="Upload file" accept=".json">  
   <br/>
-  <button (click)="addItem(todoText.value)">
+  <!--button (click)="addItem(todoText.value)">
     Upload
-  </button>
+  </button-->
 </div>
