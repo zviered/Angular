@@ -3,11 +3,6 @@ var IsAliveRequest = {
     id:1,
   };
 
-/*************************************************** */
-var IsAliveReply = { 
-    id:1,
-  };
-
 /**************************************************** */
 var ReadInfoRequest = {
     "id":2,
@@ -28,7 +23,6 @@ var WriteWaveformRequest = {
 
 export {IsAliveRequest};
 export {WriteWaveformRequest};
-export {IsAliveReply};
 export {ReadInfoRequest};
 
 
