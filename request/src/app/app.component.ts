@@ -10,6 +10,8 @@ import {ReadInfoRequest} from '../icd/PcToTgtIcd';
 
 import {IsAliveReply} from '../icd/TgtToPcIcd';
 
+const BASE_URL = 'http://localhost:8000';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -19,18 +21,36 @@ import {IsAliveReply} from '../icd/TgtToPcIcd';
 export class AppComponent {
   title = 'app works!';
   constructor(private http: Http)
-  {  
-    setInterval(()=> {
-      this.sendIsAlive(); },1000); 
+  { 
+    //Start timer for sending is alive
+    /*setInterval(()=> {
+      this.sendIsAlive(); },5000);*/ 
+    }
+  
+
+    /******************************************************************************* */
+    private readInfo ()
+    {
+      var body = JSON.stringify(ReadInfoRequest);
+      this.http.post(`${BASE_URL}`,body).subscribe ( data => {console.log ('readInfo=',data.ok);});
     }
 
+    /******************************************************************************* */
+    private writeWaveform ()
+    {
+      var body = JSON.stringify(WriteWaveformRequest);
+      this.http.post(`${BASE_URL}`,body).subscribe ( data => {console.log ('writeWaveform=',data.ok);});
+    }
+
+    /******************************************************************************* */
     private sendIsAlive ()
     {
       var myJSON = JSON.stringify(IsAliveRequest);
-      this.http.post('http://localhost:8000',myJSON)
+      this.http.post(`${BASE_URL}`,myJSON)
           .timeout(2000)
           .subscribe ( data => {console.log ('ok=',data.ok);},
-                      error => alert ('Error:'+error),
+                      //error => alert ('Error:'+error),
+                      error => console.log ('error=' + error),
                       () => console.log('END'));
     }
 }
