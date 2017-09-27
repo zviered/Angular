@@ -1,0 +1,52 @@
+
+<div class="container">
+  <ul class="nav nav-tabs">
+    <li class="active"><a data-toggle="tab" href="#write">Write</a></li>
+    <li><a data-toggle="tab" href="#read">Read</a></li>
+  </ul>
+
+  <div class="tab-content">
+    <div id="write" class="tab-pane fade in active">
+      <form>
+        <div class="form-group">
+          <label>Device:</label>
+          <select class="form-control" id="device">
+            <option>0</option>
+            <option>1</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Offset:</label>
+          <input class="form-control" id="offset" value="0x0">
+        </div>
+        <div class="form-group">
+            <label>Data:</label>
+            <input class="form-control" id="data" value="0x0">
+        </div>
+        <button type="submit" class="btn btn-default">Submit</button>
+      </form>
+    </div>
+    <div id="read" class="tab-pane fade">
+      <form>
+          <div class="form-group">
+              <label>Device:</label>
+              <select class="form-control" id="device">
+                <option>0</option>
+                <option>1</option>
+              </select>
+          </div>
+          <div class="form-group">
+            <label>Offset:</label>
+            <input class="form-control" id="offset" value="0x0">
+          </div>
+          <div class="form-group">
+              <label>Data:</label>
+              <input class="form-control" id="data" readonly>
+          </div>
+          <button type="submit" class="btn btn-default">Submit</button>
+        </form>
+    </div>
+    
+  </div>
+</div>
+
