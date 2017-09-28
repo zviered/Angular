@@ -10,40 +10,40 @@
       <form>
         <div class="form-group">
           <label>Device:</label>
-          <select class="form-control" id="device">
+          <select class="form-control" id="device" #writeDevice>
             <option>0</option>
             <option>1</option>
           </select>
         </div>
         <div class="form-group">
           <label>Offset:</label>
-          <input class="form-control" id="offset" value="0x0">
+          <input class="form-control" id="offset" value="0x0" #writeOffset>
         </div>
         <div class="form-group">
             <label>Data:</label>
-            <input class="form-control" id="data" value="0x0">
+            <input class="form-control" id="data" value="0x0" #writeData>
         </div>
-        <button type="submit" class="btn btn-default">Submit</button>
+        <button type="submit" class="btn btn-default" (click)="writeWord(writeDevice.value, writeOffset.value, writeData.value)">Submit</button>
       </form>
     </div>
     <div id="read" class="tab-pane fade">
       <form>
           <div class="form-group">
               <label>Device:</label>
-              <select class="form-control" id="device">
+              <select class="form-control" id="device" #readDevice>
                 <option>0</option>
                 <option>1</option>
               </select>
           </div>
           <div class="form-group">
             <label>Offset:</label>
-            <input class="form-control" id="offset" value="0x0">
+            <input class="form-control" id="offset" value="0x0" #readOffset>
           </div>
           <div class="form-group">
               <label>Data:</label>
-              <input class="form-control" id="data" readonly>
+              <input class="form-control" id="data" readonly value={{readData}}>
           </div>
-          <button type="submit" class="btn btn-default">Submit</button>
+          <button type="submit" class="btn btn-default" (click)="readWord(readDevice.value, readOffset.value)">Submit</button>
         </form>
     </div>
     
