@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "HttpServer.h"
 #include <winsock2.h>
+#include "jsmn.h"
 
 
 /*********************************************************************/
