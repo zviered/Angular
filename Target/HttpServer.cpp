@@ -132,7 +132,7 @@ void CHttpServer::CopyToStream(void *pDest, char *pSrc)
 int CHttpServer::Respond (void)
 {
 	int InMsgSize=0;
-	char OkMsg[1024]="HTTP/1.1 200 OK\r\nContent-Length: 17\r\nServer: Microsoft-HTTPAPI/2.0\r\nAccess-Control-Allow-Origin: *\r\n";
+	char OkMsg[1024]="HTTP/1.1 200 OK\r\nAccess-Control-Allow-Origin: *\r\n";
 	int rc;
 	SYSTEMTIME SystemTime;
 	char Date[64];
@@ -164,7 +164,7 @@ int CHttpServer::Respond (void)
 		sprintf_s(Date, "Date: %s, %d %s %d %02d:%02d:%02d GMT\r\n\r\n",DAY[SystemTime.wDayOfWeek],
 														SystemTime.wDay, MONTH[SystemTime.wMonth-1], SystemTime.wYear,
 													    SystemTime.wHour, SystemTime.wMinute, SystemTime.wSecond);
-		strcat_s(OkMsg, Date);
+		//strcat_s(OkMsg, Date);
 
 		rc=send(m_AcceptSocket, OkMsg, strlen(OkMsg),0);
 		if (rc != strlen(OkMsg))

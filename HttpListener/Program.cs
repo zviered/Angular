@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Text;
+using System.IO;
 
 namespace HttpLstener
 {
@@ -25,6 +27,7 @@ namespace HttpLstener
         static void Main(string[] args)
         {
             var web = new HttpListener();
+            string msg = "{\"id\":0,\"size\":0}";
 
             web.Prefixes.Add("http://localhost:8000/");
 
@@ -42,10 +45,17 @@ namespace HttpLstener
                 string s = GetRequestPostData(request);
                 Console.WriteLine(s);
 
+
                 response.StatusCode = 200;
                 response.Headers.Add("Access-Control-Allow-Origin", "*");
-                var output = response.OutputStream;
- 
+                response.ContentType = "text/html";
+
+                byte[] buffer = Encoding.UTF8.GetBytes(msg);
+
+                response.ContentLength64 = buffer.Length;
+                Stream st = response.OutputStream;
+                st.Write(buffer, 0, buffer.Length);
+
                 response.Close();
             }
 
