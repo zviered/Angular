@@ -10,6 +10,11 @@ CHttpServer::CHttpServer(void)
 	m_pInMsg = new char[MAX_IN_MSG_SIZE];
 	m_pToken = new char[MAX_TOKEN_SIZE];
 	m_pJsonParser = new jsmn_parser();
+	m_pTokenDb = new TOKEN[MAX_JSON_TOKENS];
+	m_pJsonToken = new jsmntok_t[MAX_JSON_TOKENS];
+
+	memset(m_pTokenDb, 0, sizeof(TOKEN)*MAX_JSON_TOKENS);
+	memset(m_pJsonToken, 0, sizeof(jsmntok_t)*MAX_JSON_TOKENS);
 }
 
 /*********************************************************************/
@@ -85,27 +90,34 @@ int CHttpServer::Receive (void)
 }
 
 /*********************************************************************/
-void CHttpServer::GetTokenName (char *pBody, jsmntok_t Token, char *pName)
+void CHttpServer::GetToken (char *pBody, jsmntok_t *pToken)
 {
-	char *pTokenStart;
-
-	pTokenStart = pBody + Token.start;
-	strncpy (pName, pTokenStart, Token.end - Token.start);
-}
-
-/*********************************************************************/
-int CHttpServer::GetTokenValue (char *pBody, jsmntok_t Token)
-{
-	char TokenValueStr[8]="";
 	char *pTokenStart;
 	int TokenValue;
+	char TokenValueStr[8] = "";
+	TOKEN *pTokenDb = m_pTokenDb;
 
-	pTokenStart = pBody + Token.start;
-	strncpy (TokenValueStr, pTokenStart, Token.end - Token.start);
+	while (pToken->type != JSMN_UNDEFINED)
+	{
+		if (pToken->type == JSMN_STRING &&
+			(pToken+1)->type == JSMN_PRIMITIVE)
+		{
+			pTokenStart = pBody + pToken->start;
+			strncpy(pTokenDb->Name, pTokenStart, pToken->end - pToken->start);
 
-	sscanf (TokenValueStr,"%d",&TokenValue);
+			pToken++;
+			pTokenStart = pBody + pToken->start;
+			strncpy(TokenValueStr, pTokenStart, pToken->end - pToken->start);
+			sscanf(TokenValueStr, "%d", &pTokenDb->Value);
+			printf("Name=%s Value=%d\n", pTokenDb->Name, pTokenDb->Value);
 
-	return TokenValue;
+			pToken++,
+			pTokenDb++;
+		}
+		else
+			pToken++;
+	}
+	
 }
 
 /*********************************************************************/
@@ -122,6 +134,7 @@ int CHttpServer::Respond (void)
 	char *pBody;
 	char TokenName[8]="";
 	char *pTokenStart;
+	int TokenVal;
 
 	memset(m_pInMsg, 0, MAX_IN_MSG_SIZE);
 	
@@ -144,17 +157,9 @@ int CHttpServer::Respond (void)
 	if (strstr (m_pToken, "POST"))
 	{
 		pBody = (char*)memchr (m_pInMsg,'{',MAX_IN_MSG_SIZE);
-		jsmn_parse (m_pJsonParser,pBody,strlen (pBody), m_JsonToken, MAX_JSON_TOKENS);
+		jsmn_parse (m_pJsonParser,pBody,strlen (pBody), m_pJsonToken, MAX_JSON_TOKENS);
 
-		//Check that the first token is a string
-		if (m_JsonToken[1].type != JSMN_STRING)
-		{
-			printf ("Body=%s. First token is not a string\n");
-			return 0;
-		}
-
-		GetTokenName (pBody, m_JsonToken[1], TokenName);
-		int TokenVal = GetTokenValue (pBody, m_JsonToken[2]);
+		GetToken (pBody, m_pJsonToken);
 
 		//Add date header
 		GetSystemTime(&SystemTime);

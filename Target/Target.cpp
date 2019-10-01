@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "HttpServer.h"
 
-#define PORT 80
+#define PORT 8000
 
 int _tmain(int argc, _TCHAR* argv[])
 {
