@@ -26,7 +26,7 @@ namespace HttpLstener
         {
             var web = new HttpListener();
 
-            web.Prefixes.Add("http://localhost:80/");
+            web.Prefixes.Add("http://localhost:8000/");
 
             Console.WriteLine("Listening..");
 
@@ -42,13 +42,11 @@ namespace HttpLstener
                 string s = GetRequestPostData(request);
                 Console.WriteLine(s);
 
-                var output = response.OutputStream;
-                string responseString = "HTTP/1.0 200 OK\n\n";
-                var buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
-                response.ContentLength64 = buffer.Length;
+                response.StatusCode = 200;
                 response.Headers.Add("Access-Control-Allow-Origin", "*");
-
-                output.Write(buffer, 0, buffer.Length);
+                var output = response.OutputStream;
+ 
+                response.Close();
             }
 
             /*if (request.HttpMethod == "POST" )

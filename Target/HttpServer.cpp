@@ -2,19 +2,18 @@
 #include "HttpServer.h"
 #include <winsock2.h>
 #include "jsmn.h"
+#include "WaveformRequest.h"
 
 
 /*********************************************************************/
 CHttpServer::CHttpServer(void)
 {
 	m_pInMsg = new char[MAX_IN_MSG_SIZE];
-	m_pToken = new char[MAX_TOKEN_SIZE];
 	m_pJsonParser = new jsmn_parser();
-	m_pTokenDb = new TOKEN[MAX_JSON_TOKENS];
 	m_pJsonToken = new jsmntok_t[MAX_JSON_TOKENS];
 
-	memset(m_pTokenDb, 0, sizeof(TOKEN)*MAX_JSON_TOKENS);
 	memset(m_pJsonToken, 0, sizeof(jsmntok_t)*MAX_JSON_TOKENS);
+	m_pWaveformRequest = new WaveformRequest();
 }
 
 /*********************************************************************/
@@ -26,7 +25,7 @@ CHttpServer::~CHttpServer(void)
 int CHttpServer::Init (int Port)
 {
 	WSADATA wsa;
-	struct sockaddr_in Server , Client;
+	struct sockaddr_in Server;
 	SOCKET Socket;
 
 	m_Port = Port;
@@ -90,51 +89,55 @@ int CHttpServer::Receive (void)
 }
 
 /*********************************************************************/
-void CHttpServer::GetToken (char *pBody, jsmntok_t *pToken)
+void CHttpServer::CopyToStream(void *pDest, char *pSrc)
 {
+	char *pBody;
+	jsmntok_t *pToken = m_pJsonToken;
 	char *pTokenStart;
-	int TokenValue;
+	char Name[16]="";
 	char TokenValueStr[8] = "";
-	TOKEN *pTokenDb = m_pTokenDb;
+	int  Value;
+	UINT32 *pWord32 = (UINT32 *)pDest;
+
+	//Point to start of tokens
+	pBody = (char*)memchr(pSrc, '{', MAX_IN_MSG_SIZE);
+	jsmn_parse(m_pJsonParser, pBody, strlen(pBody), m_pJsonToken, MAX_JSON_TOKENS);
 
 	while (pToken->type != JSMN_UNDEFINED)
 	{
 		if (pToken->type == JSMN_STRING &&
-			(pToken+1)->type == JSMN_PRIMITIVE)
+			(pToken + 1)->type == JSMN_PRIMITIVE)
 		{
-			pTokenStart = pBody + pToken->start;
-			strncpy(pTokenDb->Name, pTokenStart, pToken->end - pToken->start);
+			//Get token name. For debug purpose only
+			//pTokenStart = pBody + pToken->start;
+			//strncpy(Name, pTokenStart, pToken->end - pToken->start);
 
+			//Go next token. 
 			pToken++;
 			pTokenStart = pBody + pToken->start;
+			//Copy token value
 			strncpy(TokenValueStr, pTokenStart, pToken->end - pToken->start);
-			sscanf(TokenValueStr, "%d", &pTokenDb->Value);
-			printf("Name=%s Value=%d\n", pTokenDb->Name, pTokenDb->Value);
-
-			pToken++,
-			pTokenDb++;
+			//Convert string to int
+			sscanf(TokenValueStr, "%d", &Value);
+			//printf("Name=%s Value=%d\n", Name, Value);
+			*pWord32 = Value;
+			pWord32++;
 		}
-		else
-			pToken++;
+
+		pToken++;
 	}
-	
 }
 
 /*********************************************************************/
 int CHttpServer::Respond (void)
 {
 	int InMsgSize=0;
-	char *pNextToken=NULL;
-	char OkMsg[1024] = "HTTP/1.1 200 OK\r\nContent-Length: 17\r\nServer: Microsoft-HTTPAPI/2.0\r\nAccess-Control-Allow-Origin: *\r\n";
+	char OkMsg[1024]="HTTP/1.1 200 OK\r\nContent-Length: 17\r\nServer: Microsoft-HTTPAPI/2.0\r\nAccess-Control-Allow-Origin: *\r\n";
 	int rc;
 	SYSTEMTIME SystemTime;
 	char Date[64];
 	char *pDest = m_pInMsg;
 	int Rcvd;
-	char *pBody;
-	char TokenName[8]="";
-	char *pTokenStart;
-	int TokenVal;
 
 	memset(m_pInMsg, 0, MAX_IN_MSG_SIZE);
 	
@@ -142,24 +145,19 @@ int CHttpServer::Respond (void)
 	Rcvd = recv (m_AcceptSocket,pDest,MIN_REQUEST_SIZE,0);
 	if (Rcvd<=0)
 		return 0;
-	printf ("Rcvd=%d\n",Rcvd);
+	//printf ("Rcvd=%d\n",Rcvd);
 
 	pDest+=Rcvd;
 	InMsgSize+=Rcvd;
 	//Receive rest of message
 	Rcvd = recv (m_AcceptSocket,pDest,MAX_IN_MSG_SIZE,0);
-	printf ("Rcvd=%d\n",Rcvd);
+	//printf ("Rcvd=%d\n",Rcvd);
 
-	printf("InMsgSize=%d\n", InMsgSize);
+	//printf("InMsgSize=%d\n", InMsgSize);
 
-	m_pToken = strtok_s (m_pInMsg, " \t\n", &pNextToken);
-
-	if (strstr (m_pToken, "POST"))
+	if (strstr (m_pInMsg, "POST"))
 	{
-		pBody = (char*)memchr (m_pInMsg,'{',MAX_IN_MSG_SIZE);
-		jsmn_parse (m_pJsonParser,pBody,strlen (pBody), m_pJsonToken, MAX_JSON_TOKENS);
-
-		GetToken (pBody, m_pJsonToken);
+		CopyToStream(m_pWaveformRequest, m_pInMsg);
 
 		//Add date header
 		GetSystemTime(&SystemTime);
@@ -167,13 +165,12 @@ int CHttpServer::Respond (void)
 														SystemTime.wDay, MONTH[SystemTime.wMonth-1], SystemTime.wYear,
 													    SystemTime.wHour, SystemTime.wMinute, SystemTime.wSecond);
 		strcat_s(OkMsg, Date);
-		strcat_s(OkMsg, "HTTP / 1.1 200 OK\n\n");
 
 		rc=send(m_AcceptSocket, OkMsg, strlen(OkMsg),0);
 		if (rc != strlen(OkMsg))
 			printf("send failed\n");
 	}
-	else if (strstr (m_pToken, "GET"))
+	else if (strstr (m_pInMsg, "GET"))
 	{
 
 	}
