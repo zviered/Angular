@@ -49,7 +49,7 @@ namespace HttpLstener
                 response.StatusCode = 200;
                 response.Headers.Add("Access-Control-Allow-Origin", "*");
                 response.ContentType = "text/html";
-
+                
                 byte[] buffer = Encoding.UTF8.GetBytes(msg);
 
                 response.ContentLength64 = buffer.Length;
