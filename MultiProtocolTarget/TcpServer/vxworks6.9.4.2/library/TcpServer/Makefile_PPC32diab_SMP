@@ -1,0 +1,31 @@
+
+OBJ_DIR = ./Debug_PPC32diab_SMP
+WIND_HOME=d:/Workbench_3_3_3_5
+WIND_BASE=$(WIND_HOME)/vxworks-6.9
+
+CC = $(WIND_HOME)/diab/5.9.1.0/WIN32/bin/dcc.exe
+RM = $(WIND_HOME)/utilities-1.0/x86-win32/bin/rm.exe
+CP = cp
+
+INC_PATH = -I$(WIND_BASE)/target/h\
+			-I$(WIND_BASE)/target/h/wrn/coreip
+		   
+CCFLAGS =  -g -tPPCFH:vxworks69 -Xstmw-slow -DPPC32_fp60x -Xstsw-slow -W:c:,-Xclib-optim-off -Xansi -Xlocal-data-area-static-only  -W:c++:.CPP -ei1518,4177,4223,4301,4550,5409,1606 -ei4193,4826,4381,4237,1573,4007,4082,4177,4223,4260,4550,5361,5828,2273,5387,5388 -ei1522,4092,4111,4152,4167,4171,4174,4186,4188,4191,4192,4223,4231,4236,4284,4375,4494,4513,5152,5457 -Xforce-declarations   -Xmake-dependency=0xd -DCPU=_VX_PPC32 -DTOOL_FAMILY=diab -DTOOL=diab -D_WRS_KERNEL -D_WRS_VX_SMP -D_WRS_CONFIG_SMP -D_VSB_CONFIG_FILE=\"D:/WorkBench_3_3_3_5/vxworks-6.9/target/lib_smp/h/config/vsbConfig.h\"   -DIP_PORT_VXWORKS=69 
+
+AR	= $(WIND_HOME)/diab/5.9.1.0/WIN32/bin/dar.exe
+ARFLAGS = -q
+
+OBJS = \
+	$(OBJ_DIR)/TcpServer.o 
+
+$(OBJ_DIR)/TcpServer.a: $(OBJS)
+	 $(AR) $(ARFLAGS) $(OBJ_DIR)/TcpServer.a $(OBJS)
+	 $(CP) $(OBJ_DIR)/TcpServer.a ../../release/PPC32diab_SMP
+	 $(CP) TcpServer.h ../../release/PPC32diab_SMP
+	 
+$(OBJ_DIR)/TcpServer.o: TcpServer.cpp
+	 $(CC) $(CCFLAGS) $(INC_PATH) -c TcpServer.cpp -o $(OBJ_DIR)/TcpServer.o
+				 	
+clean:
+	$(RM) $(OBJ_DIR)/*.*
+	

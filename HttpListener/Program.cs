@@ -27,7 +27,8 @@ namespace HttpLstener
         static void Main(string[] args)
         {
             var web = new HttpListener();
-            string msg = "{\"id\":0,\"size\":0}";
+            //string msg = "{\"id\":0,\"size\":0}";
+            string msg = "{\"id\":0,0}";
 
             web.Prefixes.Add("http://localhost:8000/");
 

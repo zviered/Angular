@@ -1,0 +1,7 @@
+*.suo
+*.user
+*.filters
+[Dd]ebug/
+x64/
+
+
