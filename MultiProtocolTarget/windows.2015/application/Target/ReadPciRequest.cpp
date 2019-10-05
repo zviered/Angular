@@ -27,7 +27,9 @@ int CReadPciRequest::Execute(void *pRequest, void *pReply)
 	pReplyMsg->Header.Magic = TGT_TO_PC_MAGIC;
 	pReplyMsg->Header.Checksum = 0x0;
 
-	printf ("ReadPciRequest: Device=%d Bar=%d Offset=0x%x Data=0x%x\n",
+	pReplyMsg->Data = 17;
+
+	printf ("ReadPciRequest: Bar=%d Offset=0x%x Data=0x%x\n",
 			 pRequestMsg->Bar,
 			 pRequestMsg->Offset, 
 			 pReplyMsg->Data);
