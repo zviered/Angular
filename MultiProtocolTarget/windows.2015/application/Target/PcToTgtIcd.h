@@ -1,4 +1,4 @@
-#define PC_TO_TGT_HTTP_PORT				80
+#define PC_TO_TGT_HTTP_PORT				8080
 #define PC_TO_TGT_TCP_PORT				5100
 
 #ifndef _UINT32

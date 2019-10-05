@@ -23,6 +23,8 @@ private:
 	jsmntok_t *m_pJsonToken;
 	void CopyToStream(void *pDest, char *pSrc);
 	int ReplyPost(void);
+	int ReplyGet(void);
+
 public:
 	CHttpProtocol();
 	~CHttpProtocol();

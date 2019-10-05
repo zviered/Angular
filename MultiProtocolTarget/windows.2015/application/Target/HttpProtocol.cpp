@@ -48,6 +48,48 @@ int CHttpProtocol::Init()
 }
 
 /****************************************************************************/
+int CHttpProtocol::ReplyGet(void)
+{
+	FILE *Handle;
+	char *pDest = m_pReplyBody;
+	int rc;
+	int BytesInFile = 0;
+	char BodyLengthHeader[64];
+
+	m_pReplyMsg[0] = 0;
+	m_pReplyBody[0] = 0;
+	
+	rc = fopen_s(&Handle,"index.html", "rb");
+
+	while (1)
+	{
+		rc=fread(pDest, 1, MIN_REQUEST_SIZE, Handle);
+		BytesInFile += rc;
+		if (rc < MIN_REQUEST_SIZE)
+			break;
+		pDest += rc;
+		
+	}
+
+	fclose(Handle);
+
+	sprintf_s(BodyLengthHeader, sizeof(BodyLengthHeader), "Content-Length: %d\r\n", BytesInFile);
+
+	strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, "HTTP/1.1 200 OK\r\n");
+	strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, BodyLengthHeader);
+	strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, "Content-Type: text/html\r\n");
+	strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, "\r\n");
+	strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, m_pReplyBody);
+
+	rc = m_pTcpServer->Send(m_pReplyMsg, strlen(m_pReplyMsg));
+	if (rc != strlen(m_pReplyMsg))
+		printf("send failed\n");
+
+	m_pTcpServer->Close();
+	return 0;
+}
+
+/****************************************************************************/
 int CHttpProtocol :: ReplyPost(void)
 {
 	SYSTEMTIME SystemTime;
@@ -89,9 +131,9 @@ int CHttpProtocol :: ReplyPost(void)
 
 	strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, BodyLengthHeader);
 	strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, "Content-Type: text/html\r\n");
-	strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, "Server: Microsoft-HTTPAPI/2.0\r\n");
+	//strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, "Server: Microsoft-HTTPAPI/2.0\r\n");
 	strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, "Access-Control-Allow-Origin: *\r\n");
-	strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, Date);
+	//strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, Date);
 	strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, "\r\n");	
 	strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, m_pReplyBody);
 
@@ -180,6 +222,10 @@ int CHttpProtocol::Loop()
 				Handle(pHeader->Code);
 
 			ReplyPost ();
+		}
+		else if (strstr (m_pRequestMsg, "GET"))
+		{
+			ReplyGet();
 		}
 	}
 }
