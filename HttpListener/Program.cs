@@ -28,8 +28,9 @@ namespace HttpLstener
         {
             var web = new HttpListener();
             string FileName=null, FilePath=null;
+            int PacketLength;
 
-            web.Prefixes.Add("http://localhost:8000/");
+            web.Prefixes.Add("http://*:8000/");
 
             Console.WriteLine("Listening..");
 
@@ -37,6 +38,7 @@ namespace HttpLstener
 
             while (true)
             {
+                int PacketOffset = 0;
                 HttpListenerContext context = web.GetContext();
 
                 HttpListenerResponse response = context.Response;
@@ -66,7 +68,7 @@ namespace HttpLstener
                 else if (Ext == ".ico")
                     response.ContentType = "image/vnd.microsoft.icon";
 
-                FilePath = "D:/zvi_vered/git/ELTA_34/dist/Elta" + FileName;
+                FilePath = "d:/zvi_vered/git/ELTA_34/dist/Elta" + FileName;
                 byte[] buffer = File.ReadAllBytes(FilePath);
                 if (buffer.Length == 0)
                 {
@@ -75,7 +77,18 @@ namespace HttpLstener
                 }
                 response.ContentLength64 = buffer.Length;
                 Stream st = response.OutputStream;
-                st.Write(buffer, 0, buffer.Length);
+                //st.Write(buffer, 0, buffer.Length);
+                while (PacketOffset < buffer.Length)
+                {
+                    if (buffer.Length - PacketOffset >= 1514)
+                        PacketLength = 1514;
+                    else
+                        PacketLength = buffer.Length - PacketOffset;
+
+                    st.Write(buffer, PacketOffset, PacketLength);
+                    PacketOffset += PacketLength;
+                    
+                }
 
                 response.Close();
             }
