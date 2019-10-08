@@ -55,11 +55,14 @@ int CHttpProtocol::ReplyGet(void)
 	int rc;
 	int BytesInFile = 0;
 	char BodyLengthHeader[64];
+	char DistDir[64] = "D:/zvi_vered/git/ELTA_34/dist/Elta/index.html";
+	char File[256];
 
 	m_pReplyMsg[0] = 0;
 	m_pReplyBody[0] = 0;
 	
-	rc = fopen_s(&Handle,"index.html", "rb");
+	sprintf_s(File, "%s%s", DistDir, "index.html");
+	rc = fopen_s(&Handle, DistDir, "rb");
 
 	while (1)
 	{
@@ -206,11 +209,11 @@ int CHttpProtocol::Loop()
 		m_pTcpServer->WaitForHandShake();
 
 		//Receive min message
-		rc = m_pTcpServer->Receive(pDest, MIN_REQUEST_SIZE);
-		pDest += rc;
+		rc = m_pTcpServer->Receive(pDest, MAX_IN_MSG_SIZE);
+		//pDest += rc;
 		
 		//Receive rest of message
-		rc = m_pTcpServer->Receive(pDest, MAX_IN_MSG_SIZE);
+		//rc = m_pTcpServer->Receive(pDest, MAX_IN_MSG_SIZE);
 
 		if (strstr(m_pRequestMsg, "POST"))
 		{
@@ -225,6 +228,7 @@ int CHttpProtocol::Loop()
 		}
 		else if (strstr (m_pRequestMsg, "GET"))
 		{
+			printf("m_pRequestMsg=%s\n", m_pRequestMsg);
 			ReplyGet();
 		}
 	}
