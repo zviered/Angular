@@ -55,15 +55,45 @@ int CHttpProtocol::ReplyGet(void)
 	int rc;
 	int BytesInFile = 0;
 	char BodyLengthHeader[64];
-	char DistDir[64] = "D:/zvi_vered/git/ELTA_34/dist/Elta/index.html";
-	char File[256];
+	char DistDir[64] = "D:/zvi_vered/git/ELTA_34/dist/Elta";
+	char FilePath[256];
+	char *pFileNameStart;
+	char *pFileNameEnd;
+	char FileName[64];
+	char ContentType[64];
 
 	m_pReplyMsg[0] = 0;
 	m_pReplyBody[0] = 0;
 	
-	sprintf_s(File, "%s%s", DistDir, "index.html");
-	rc = fopen_s(&Handle, DistDir, "rb");
+	pFileNameStart = strchr(m_pRequestMsg, '/');
+	pFileNameEnd = strchr(pFileNameStart, ' ');
+	strncpy_s(FileName, pFileNameStart, pFileNameEnd - pFileNameStart);
 
+	if (strstr(FileName, ".html"))
+		strcpy_s(ContentType, "text/html");
+	else if (strstr(FileName, ".css"))
+		strcpy_s(ContentType, "text/css");
+	else if (strstr(FileName, ".js"))
+		strcpy_s(ContentType, "application / javascript");
+	else if (strstr(FileName, ".png"))
+		strcpy_s(ContentType, "image/png");
+	else if (strstr(FileName, ".ttf"))
+		strcpy_s(ContentType, "application / font - sfnt");
+	else if (strstr(FileName, ".ico"))
+		strcpy_s(ContentType, "image / vnd.microsoft.icon");
+
+	if (strcmp(FileName, "/") == 0)
+		strcpy_s(FileName, "/index.html");
+
+	sprintf_s(FilePath, "%s%s", DistDir, FileName);
+	rc = fopen_s(&Handle, FilePath, "rb");
+	if (rc != 0)
+	{
+		printf("Failed to open %s\n", FilePath);
+		return -1;
+	}
+
+	printf("FilePath=%s\n", FilePath);
 	while (1)
 	{
 		rc=fread(pDest, 1, MIN_REQUEST_SIZE, Handle);
@@ -77,10 +107,11 @@ int CHttpProtocol::ReplyGet(void)
 	fclose(Handle);
 
 	sprintf_s(BodyLengthHeader, sizeof(BodyLengthHeader), "Content-Length: %d\r\n", BytesInFile);
+	//printf("BodyLengthHeader=%s\n", BodyLengthHeader);
 
 	strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, "HTTP/1.1 200 OK\r\n");
 	strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, BodyLengthHeader);
-	strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, "Content-Type: text/html\r\n");
+	strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, ContentType);
 	strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, "\r\n");
 	strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, m_pReplyBody);
 
@@ -228,10 +259,13 @@ int CHttpProtocol::Loop()
 		}
 		else if (strstr (m_pRequestMsg, "GET"))
 		{
-			printf("m_pRequestMsg=%s\n", m_pRequestMsg);
-			ReplyGet();
+			//printf("m_pRequestMsg=%s\n", m_pRequestMsg);
+			if (ReplyGet() != 0)
+				break;
 		}
 	}
+
+	return 0;
 }
 
 /****************************************************************************/
