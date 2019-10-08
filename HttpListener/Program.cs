@@ -28,7 +28,6 @@ namespace HttpLstener
         {
             var web = new HttpListener();
             string FileName=null, FilePath=null;
-            int PacketLength;
 
             web.Prefixes.Add("http://*:8000/");
 
@@ -38,7 +37,6 @@ namespace HttpLstener
 
             while (true)
             {
-                int PacketOffset = 0;
                 HttpListenerContext context = web.GetContext();
 
                 HttpListenerResponse response = context.Response;
@@ -77,18 +75,7 @@ namespace HttpLstener
                 }
                 response.ContentLength64 = buffer.Length;
                 Stream st = response.OutputStream;
-                //st.Write(buffer, 0, buffer.Length);
-                while (PacketOffset < buffer.Length)
-                {
-                    if (buffer.Length - PacketOffset >= 1514)
-                        PacketLength = 1514;
-                    else
-                        PacketLength = buffer.Length - PacketOffset;
-
-                    st.Write(buffer, PacketOffset, PacketLength);
-                    PacketOffset += PacketLength;
-                    
-                }
+                st.Write(buffer, 0, buffer.Length);
 
                 response.Close();
             }

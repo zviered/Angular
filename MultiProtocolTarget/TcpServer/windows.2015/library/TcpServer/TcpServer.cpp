@@ -11,7 +11,7 @@ int CTcpServer::Open(int Port, int Timeout, char *IpAddress)
 {
 	WSADATA wsaData;
 	int rc;
-	DWORD RecvTimeout = Timeout;
+	DWORD RecvTimeout = 1000;
 
 	rc = WSAStartup(MAKEWORD(2, 2), &wsaData);
 	if (rc != 0)
