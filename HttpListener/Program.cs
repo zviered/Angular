@@ -29,7 +29,7 @@ namespace HttpLstener
             var web = new HttpListener();
             string FileName=null, FilePath=null;
 
-            web.Prefixes.Add("http://*:8000/");
+            web.Prefixes.Add("http://localhost:8000/");
 
             Console.WriteLine("Listening..");
 
@@ -73,7 +73,7 @@ namespace HttpLstener
                     Console.WriteLine("Failed to find: "+FileName);
                     break;
                 }
-                response.ContentLength64 = buffer.Length;
+                //response.ContentLength64 = buffer.Length;
                 Stream st = response.OutputStream;
                 st.Write(buffer, 0, buffer.Length);
 

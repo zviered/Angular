@@ -6,6 +6,8 @@
 #include "string.h"
 #include "jsmn.h"
 
+#define BODY_WITH_HEADERS
+
 /****************************************************************************/
 CHttpProtocol::CHttpProtocol()
 {
@@ -53,7 +55,7 @@ int CHttpProtocol::ReplyGet(void)
 	FILE *Handle;
 	char *pDest = m_pReplyBody;
 	int rc;
-	int BytesInFile = 0;
+	int BodyLength = 0;
 	char BodyLengthHeader[64];
 	char DistDir[64] = "D:/zvi_vered/git/ELTA_34/dist/Elta";
 	char FilePath[256];
@@ -61,9 +63,11 @@ int CHttpProtocol::ReplyGet(void)
 	char *pFileNameEnd;
 	char FileName[64];
 	char ContentType[64];
+	int NofBytes;
+	int MsgLength;
 
-	m_pReplyMsg[0] = 0;
-	m_pReplyBody[0] = 0;
+	memset(m_pReplyMsg, 0, MAX_OUT_MSG_SIZE);
+	memset(m_pReplyBody, 0, MAX_OUT_MSG_SIZE);
 	
 	pFileNameStart = strchr(m_pRequestMsg, '/');
 	pFileNameEnd = strchr(pFileNameStart, ' ');
@@ -94,30 +98,48 @@ int CHttpProtocol::ReplyGet(void)
 	}
 
 	printf("FilePath=%s\n", FilePath);
-	while (1)
+	while ((NofBytes = fread(pDest, 1, MIN_REQUEST_SIZE, Handle))> 0)
 	{
-		rc=fread(pDest, 1, MIN_REQUEST_SIZE, Handle);
-		BytesInFile += rc;
-		if (rc < MIN_REQUEST_SIZE)
-			break;
-		pDest += rc;
-		
+		BodyLength += NofBytes;
+		pDest += NofBytes;
 	}
 
 	fclose(Handle);
 
-	sprintf_s(BodyLengthHeader, sizeof(BodyLengthHeader), "Content-Length: %d\r\n", BytesInFile);
-	//printf("BodyLengthHeader=%s\n", BodyLengthHeader);
-
 	strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, "HTTP/1.1 200 OK\r\n");
-	strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, BodyLengthHeader);
+	strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, "Access-Control-Allow-Origin: *\r\n");
 	strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, ContentType);
+	strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, "Transfer-Encoding: chunked\r\n");
 	strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, "\r\n");
-	strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, m_pReplyBody);
-
-	rc = m_pTcpServer->Send(m_pReplyMsg, strlen(m_pReplyMsg));
-	if (rc != strlen(m_pReplyMsg))
+	int HdrLength = strlen(m_pReplyMsg);
+	printf("B4 body=%d\n", strlen(m_pReplyMsg));
+#ifdef BODY_WITH_HEADERS
+	//strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, m_pReplyBody);
+	memcpy(m_pReplyMsg + HdrLength, m_pReplyBody, BodyLength);
+	//printf("AF body=%d\n", strlen(m_pReplyMsg));
+#endif
+	MsgLength = HdrLength + BodyLength;
+	rc = m_pTcpServer->Send(m_pReplyMsg, MsgLength);
+	if (rc != MsgLength)
 		printf("send failed\n");
+
+#ifndef BODY_WITH_HEADERS
+	rc = m_pTcpServer->Send(m_pReplyBody, BytesInFile);
+	if (rc != BytesInFile)
+	{
+		printf("send failed\n");
+	}
+	/*rc = fopen_s(&Handle, FilePath, "rb");
+	while ((NofBytes = fread(m_pReplyBody, 1, 1024, Handle)) > 0)
+	{
+		rc = m_pTcpServer->Send(m_pReplyBody, NofBytes);
+		if (rc != NofBytes)
+		{
+			printf("send failed\n");
+		}
+	}
+	fclose(Handle);*/
+#endif
 
 	m_pTcpServer->Close();
 	return 0;
@@ -239,10 +261,19 @@ int CHttpProtocol::Loop()
 	{
 		m_pTcpServer->WaitForHandShake();
 
-		//Receive min message
 		rc = m_pTcpServer->Receive(pDest, MAX_IN_MSG_SIZE);
-		//pDest += rc;
-		
+		//Receive min message
+		/*while (1)
+		{
+			rc = m_pTcpServer->Receive(pDest, 1);
+			if (*pDest = '\n')
+			{
+				printf("End of line\n");
+				break;
+			}
+			pDest++;
+		}*/
+
 		//Receive rest of message
 		//rc = m_pTcpServer->Receive(pDest, MAX_IN_MSG_SIZE);
 

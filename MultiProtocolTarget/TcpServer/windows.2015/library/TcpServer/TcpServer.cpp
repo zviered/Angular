@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "Winsock2.h"
 #include "TcpServer.h"
+#include "stdio.h"
 
 // This is the constructor of a class that has been exported.
 // see TcpServer.h for the class definition
@@ -11,7 +12,11 @@ int CTcpServer::Open(int Port, int Timeout, char *IpAddress)
 {
 	WSADATA wsaData;
 	int rc;
-	DWORD RecvTimeout = 1000;
+	DWORD RecvTimeout = 0;
+	DWORD RecvBuf;
+	int Size;
+	int rcvbuf;
+	int len = sizeof(rcvbuf);
 
 	rc = WSAStartup(MAKEWORD(2, 2), &wsaData);
 	if (rc != 0)
@@ -44,6 +49,9 @@ int CTcpServer::Open(int Port, int Timeout, char *IpAddress)
 	if (setsockopt(m_Socket, SOL_SOCKET, SO_RCVTIMEO, (char*)&RecvTimeout, sizeof(DWORD))<0)
 		return GetLastError();
 
+	if (getsockopt(m_Socket, SOL_SOCKET, SO_RCVBUF, (char*)&rcvbuf, &len) < 0)
+		return GetLastError();
+
 	return 0;
 }
 
@@ -74,7 +82,14 @@ int CTcpServer::Send(void *pBuffer, int Size)
 /**********************************************************************/
 int CTcpServer::Receive(void *pBuffer, int Size)
 {
-	return recv(m_ClientSocket, (char*)pBuffer, Size, 0);
+	int rc;
+
+	rc = recv(m_ClientSocket, (char*)pBuffer, Size, 0);
+	if (rc < 0)
+	{
+		printf("recv: rc=%d Error=0x%x\n", rc,GetLastError());
+	}
+	return rc;
 }
 
 /**********************************************************************/
