@@ -9,27 +9,12 @@ namespace HttpLstener
 {
     class Program
     {
-        public static string GetRequestPostData(HttpListenerRequest request)
-        {
-            if (!request.HasEntityBody)
-            {
-                return null;
-            }
-            using (System.IO.Stream body = request.InputStream) // here we have data
-            {
-                using (System.IO.StreamReader reader = new System.IO.StreamReader(body, request.ContentEncoding))
-                {
-                    return reader.ReadToEnd();
-                }
-            }
-        }
-
         static void Main(string[] args)
         {
             var web = new HttpListener();
             string FileName=null, FilePath=null;
 
-            web.Prefixes.Add("http://localhost:8000/");
+            web.Prefixes.Add("http://*:8000/");
 
             Console.WriteLine("Listening..");
 
@@ -73,22 +58,18 @@ namespace HttpLstener
                     Console.WriteLine("Failed to find: "+FileName);
                     break;
                 }
+
                 //response.ContentLength64 = buffer.Length;
                 Stream st = response.OutputStream;
+                //buffer.Length is the body length
                 st.Write(buffer, 0, buffer.Length);
+
+                BinaryWriter writer = new BinaryWriter(File.Open(FileName, FileMode.Create));
+                writer.Write(buffer, 0, buffer.Length);
+                writer.Close();
 
                 response.Close();
             }
-
-            /*if (request.HttpMethod == "POST" )
-            {
-                // Here i can read all parameters in string but how to parse each one i don't know  
-                if (request.ContentType == "multipart/form-data")
-                {
-                    Console.WriteLine(request.ContentType);
-                    int rc = response.Headers.Count;
-                }
-            }*/
         }
     }
 }

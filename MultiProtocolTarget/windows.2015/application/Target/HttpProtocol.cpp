@@ -50,44 +50,66 @@ int CHttpProtocol::Init()
 }
 
 /****************************************************************************/
+int CHttpProtocol::GetDateHeader(char *Hdr)
+{
+	
+
+	
+
+}
+
+/****************************************************************************/
 int CHttpProtocol::ReplyGet(void)
 {
 	FILE *Handle;
 	char *pDest = m_pReplyBody;
 	int rc;
-	int BodyLength = 0;
-	char BodyLengthHeader[64];
 	char DistDir[64] = "D:/zvi_vered/git/ELTA_34/dist/Elta";
 	char FilePath[256];
 	char *pFileNameStart;
 	char *pFileNameEnd;
 	char FileName[64];
-	char ContentType[64];
+	char ContentType[64] = "Content-Type: ";
+	char ContentLength[64] = "Content-Length: ";
+	char Date[64];
+	char *pBody;
+	int BodyLength = 0;
+	int HdrLength;
+	int ReplyLength;
+
 	int NofBytes;
-	int MsgLength;
+	SYSTEMTIME SystemTime;
 
 	memset(m_pReplyMsg, 0, MAX_OUT_MSG_SIZE);
 	memset(m_pReplyBody, 0, MAX_OUT_MSG_SIZE);
-	
+
+	//Add date header
+	GetSystemTime(&SystemTime);
+	sprintf_s(Date, "Date: %s, %d %s %d %02d:%02d:%02d GMT\r\n", DAY[SystemTime.wDayOfWeek],
+		SystemTime.wDay, MONTH[SystemTime.wMonth - 1], SystemTime.wYear,
+		SystemTime.wHour, SystemTime.wMinute, SystemTime.wSecond);
+
 	pFileNameStart = strchr(m_pRequestMsg, '/');
 	pFileNameEnd = strchr(pFileNameStart, ' ');
 	strncpy_s(FileName, pFileNameStart, pFileNameEnd - pFileNameStart);
+	if (strcmp(FileName, "/") == 0)
+	{
+		strcpy_s(FileName, "/index.html");
+	}
 
 	if (strstr(FileName, ".html"))
-		strcpy_s(ContentType, "text/html");
+		strcat_s(ContentType, sizeof(ContentType), "text/html");
 	else if (strstr(FileName, ".css"))
-		strcpy_s(ContentType, "text/css");
+		strcat_s(ContentType, sizeof(ContentType), "text/css");
 	else if (strstr(FileName, ".js"))
-		strcpy_s(ContentType, "application / javascript");
+		strcat_s(ContentType, sizeof(ContentType), "application/javascript");
 	else if (strstr(FileName, ".png"))
-		strcpy_s(ContentType, "image/png");
+		strcat_s(ContentType, sizeof(ContentType), "image/png");
 	else if (strstr(FileName, ".ttf"))
-		strcpy_s(ContentType, "application / font - sfnt");
+		strcat_s(ContentType, sizeof(ContentType), "application / font - sfnt");
 	else if (strstr(FileName, ".ico"))
-		strcpy_s(ContentType, "image / vnd.microsoft.icon");
-
-	if (strcmp(FileName, "/") == 0)
-		strcpy_s(FileName, "/index.html");
+		strcat_s(ContentType, sizeof(ContentType), "image / vnd.microsoft.icon");
+	strcat_s(ContentType, "\r\n");
 
 	sprintf_s(FilePath, "%s%s", DistDir, FileName);
 	rc = fopen_s(&Handle, FilePath, "rb");
@@ -100,55 +122,40 @@ int CHttpProtocol::ReplyGet(void)
 	printf("FilePath=%s\n", FilePath);
 	while ((NofBytes = fread(pDest, 1, MIN_REQUEST_SIZE, Handle))> 0)
 	{
-		BodyLength += NofBytes;
 		pDest += NofBytes;
+		BodyLength += NofBytes;
 	}
 
 	fclose(Handle);
+	sprintf_s(ContentLength, "Content-Length: %d\r\n", BodyLength);
 
 	strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, "HTTP/1.1 200 OK\r\n");
-	strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, "Access-Control-Allow-Origin: *\r\n");
+	//strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, ContentLength);
+	//strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, "Transfer-Encoding: identity\r\n");
 	strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, ContentType);
-	strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, "Transfer-Encoding: chunked\r\n");
+	strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, "Server: Microsoft - HTTPAPI / 2.0\r\n");
+	strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, "Access-Control-Allow-Origin: *\r\n");
+	//strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, "X-Content-Type-Options: nosniff\r\n");
+	strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, Date);
 	strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, "\r\n");
-	int HdrLength = strlen(m_pReplyMsg);
-	printf("B4 body=%d\n", strlen(m_pReplyMsg));
-#ifdef BODY_WITH_HEADERS
-	//strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, m_pReplyBody);
-	memcpy(m_pReplyMsg + HdrLength, m_pReplyBody, BodyLength);
-	//printf("AF body=%d\n", strlen(m_pReplyMsg));
-#endif
-	MsgLength = HdrLength + BodyLength;
-	rc = m_pTcpServer->Send(m_pReplyMsg, MsgLength);
-	if (rc != MsgLength)
+
+	HdrLength = strlen(m_pReplyMsg);
+	rc=m_pTcpServer->Send(m_pReplyMsg, HdrLength);
+	if (rc != HdrLength)
 		printf("send failed\n");
 
-#ifndef BODY_WITH_HEADERS
-	rc = m_pTcpServer->Send(m_pReplyBody, BytesInFile);
-	if (rc != BytesInFile)
-	{
+	rc = m_pTcpServer->Send(m_pReplyBody, BodyLength);
+	if (rc != BodyLength)
 		printf("send failed\n");
-	}
-	/*rc = fopen_s(&Handle, FilePath, "rb");
-	while ((NofBytes = fread(m_pReplyBody, 1, 1024, Handle)) > 0)
-	{
-		rc = m_pTcpServer->Send(m_pReplyBody, NofBytes);
-		if (rc != NofBytes)
-		{
-			printf("send failed\n");
-		}
-	}
-	fclose(Handle);*/
-#endif
 
 	m_pTcpServer->Close();
+
 	return 0;
 }
 
 /****************************************************************************/
 int CHttpProtocol :: ReplyPost(void)
 {
-	SYSTEMTIME SystemTime;
 	char Date[64];
 	int rc;
 	int ReplySize32;
@@ -157,12 +164,6 @@ int CHttpProtocol :: ReplyPost(void)
 	char NumStr[16];
 	int BodyLength;
 	char BodyLengthHeader[64];
-
-	//Add date header
-	GetSystemTime(&SystemTime);
-	sprintf_s(Date, "Date: %s, %d %s %d %02d:%02d:%02d GMT\r\n", DAY[SystemTime.wDayOfWeek],
-		SystemTime.wDay, MONTH[SystemTime.wMonth - 1], SystemTime.wYear,
-		SystemTime.wHour, SystemTime.wMinute, SystemTime.wSecond);
 
 	m_pReplyMsg[0] = 0;
 	m_pReplyBody[0] = 0;
@@ -190,7 +191,7 @@ int CHttpProtocol :: ReplyPost(void)
 	//strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, "Server: Microsoft-HTTPAPI/2.0\r\n");
 	strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, "Access-Control-Allow-Origin: *\r\n");
 	//strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, Date);
-	strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, "\r\n");	
+	//strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, "\r\n");	
 	strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, m_pReplyBody);
 
 	rc = m_pTcpServer->Send (m_pReplyMsg, strlen(m_pReplyMsg));
@@ -262,6 +263,10 @@ int CHttpProtocol::Loop()
 		m_pTcpServer->WaitForHandShake();
 
 		rc = m_pTcpServer->Receive(pDest, MAX_IN_MSG_SIZE);
+		if (rc <= 0)
+		{
+			m_pTcpServer->Close();
+		}
 		//Receive min message
 		/*while (1)
 		{
