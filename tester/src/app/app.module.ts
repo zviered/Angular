@@ -1,37 +1,26 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import { MdMenuModule } from '@angular/material';
-import {
-  RouterModule,
-  Routes
-} from '@angular/router';
+//Following line is mandatory for two way binding
+import {FormsModule} from '@angular/forms';
 
+import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { RcmComponent } from './rcm/rcm.component';
-import { ExciterComponent } from './exciter/exciter.component';
-
-const routes: Routes = [
-  // basic routes
-  { path: 'rcm', component: RcmComponent },
-  { path: 'exciter', component: ExciterComponent },
-];
+import { ToolbarComponent } from './component/toolbar/toolbar.component';
+import { MainComponent } from './component/main/main.component';
+import { HttpClientModule } from  '@angular/common/http';
 
 @NgModule({
   declarations: [
     AppComponent,
-    RcmComponent,
-    ExciterComponent
+    ToolbarComponent,
+    MainComponent,
   ],
   imports: [
     BrowserModule,
-    BrowserAnimationsModule,
-    FormsModule,
+    AppRoutingModule,
     HttpClientModule,
-    MdMenuModule,
-    RouterModule.forRoot(routes), // <-- routes
+    //Following line is mandatory for two way binding
+    FormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -106,9 +106,9 @@ int CHttpProtocol::ReplyGet(void)
 	else if (strstr(FileName, ".png"))
 		strcat_s(ContentType, sizeof(ContentType), "image/png");
 	else if (strstr(FileName, ".ttf"))
-		strcat_s(ContentType, sizeof(ContentType), "application / font - sfnt");
+		strcat_s(ContentType, sizeof(ContentType), "application/font-sfnt");
 	else if (strstr(FileName, ".ico"))
-		strcat_s(ContentType, sizeof(ContentType), "image / vnd.microsoft.icon");
+		strcat_s(ContentType, sizeof(ContentType), "image/vnd.microsoft.icon");
 	strcat_s(ContentType, "\r\n");
 
 	sprintf_s(FilePath, "%s%s", DistDir, FileName);
@@ -186,18 +186,19 @@ int CHttpProtocol :: ReplyPost(void)
 	BodyLength = strlen(m_pReplyBody);
 	sprintf_s(BodyLengthHeader, sizeof(BodyLengthHeader), "Content-Length: %d\r\n", BodyLength);
 
-	strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, BodyLengthHeader);
+	//strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, BodyLengthHeader);
 	strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, "Content-Type: text/html\r\n");
 	//strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, "Server: Microsoft-HTTPAPI/2.0\r\n");
 	strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, "Access-Control-Allow-Origin: *\r\n");
 	//strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, Date);
-	//strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, "\r\n");	
+	strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, "\r\n");	
 	strcat_s(m_pReplyMsg, MAX_OUT_MSG_SIZE, m_pReplyBody);
 
 	rc = m_pTcpServer->Send (m_pReplyMsg, strlen(m_pReplyMsg));
 	if (rc != strlen(m_pReplyMsg))
 		printf("send failed\n");
 
+	printf("Answer: %s\n", m_pReplyMsg);
 	m_pTcpServer->Close();
 	return 0;
 }

@@ -1,0 +1,23 @@
+<p>main works!</p>
+
+<div>
+     Bar: <input [(ngModel)]="writeBar" /> <br/><br/>  
+     Offset: <input [(ngModel)]="writeOffset" /> <br/><br/>
+     Data: <input [(ngModel)]="writeData" /> <br/><br/>
+     <button type="button" (click)="onPciWrite()">Write</button>
+     <!-->button type="button" onclick="onPciWrite(($event))">Write</button-->
+</div>
+
+<div>
+    Bar: <input [(ngModel)]="readBar" /> <br/><br/>  
+    Offset: <input [(ngModel)]="readOffset" /> <br/><br/>
+    Data: <input [(ngModel)]="readData" readonly/> <br/><br/>
+    <!-->button type="button" label="Read" (onClick)="onPciRead()"></button-->
+    <button type="button" (click)="onPciRead($event)">Read</button>
+</div>
+
+<!-->div class="p-grid">
+    <div class="p-col">1</div>
+    <div class="p-col">2</div>
+    <div class="p-col">3</div>
+</div-->
