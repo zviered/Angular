@@ -16,6 +16,11 @@
     <button type="button" (click)="onPciRead($event)">Read</button>
 </div>
 
+<div>
+    <br/>
+    <p-fileUpload name="myfile[]" customUpload="true" auto="true" (uploadHandler)="onOpenFile($event)" accept="text/xml"></p-fileUpload>
+ </div>
+
 <!-->div class="p-grid">
     <div class="p-col">1</div>
     <div class="p-col">2</div>

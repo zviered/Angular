@@ -55,6 +55,12 @@ export class MainComponent implements OnInit {
       });        
   }
   
+  public onOpenFile (event)
+  {
+    alert ("onFileUpload");
+    console.log(event);
+
+  }
   public onPciRead()
   {
     this.readPciRequest.Bar = this.readBar;
@@ -75,6 +81,10 @@ export class MainComponent implements OnInit {
       () => {
           console.log("The POST observable is now completed.");
       });        
+  }
+
+  myUploader(event) {
+    //event.files == files to upload
   }
 
   ngOnInit() {

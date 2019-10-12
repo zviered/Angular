@@ -8,6 +8,7 @@ import { AppComponent } from './app.component';
 import { ToolbarComponent } from './component/toolbar/toolbar.component';
 import { MainComponent } from './component/main/main.component';
 import { HttpClientModule } from  '@angular/common/http';
+import {FileUploadModule} from 'primeng/fileupload';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import { HttpClientModule } from  '@angular/common/http';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    FileUploadModule,
     //Following line is mandatory for two way binding
     FormsModule,
   ],
