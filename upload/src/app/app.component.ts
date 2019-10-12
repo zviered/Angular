@@ -27,6 +27,6 @@ export class AppComponent {
     let options = new RequestOptions({ headers: headers });
     body.append('uploadFile', file, file.name);
 
-    this.http.post(`${'http://localhost:80'}`, body, options).subscribe (data => {console.log ('response',data);});
+    this.http.post(`${'http://localhost:8000'}`, body, options).subscribe (data => {console.log ('response',data);});
   }
 }

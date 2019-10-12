@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpHeaderResponse} from '@angular/common/http';
 import {WritePciRequest} from '../../../icd/WritePci'
 import { ReadPciRequest } from 'src/icd/ReadPci';
 
@@ -24,14 +24,14 @@ export class MainComponent implements OnInit {
   writePciRequest : WritePciRequest;
   readPciRequest : ReadPciRequest;
 
-  alphas:number[] = [1,2,3,4]; 
-
+  /********************************************************************/
   constructor(private http: HttpClient) 
   { 
     this.writePciRequest = new WritePciRequest;
     this.readPciRequest = new ReadPciRequest;
   }
 
+  /********************************************************************/
   public onPciWrite()
   {
     this.writePciRequest.Bar = this.writeBar;
@@ -41,7 +41,7 @@ export class MainComponent implements OnInit {
     //alert ('onClick');
     console.log (this.writePciRequest);
 
-    var body = JSON.stringify(this.writePciRequest);
+     var body = JSON.stringify(this.writePciRequest);
     this.http.post (`${BASE_URL}`,body).subscribe(
       (val) => {
           console.log("POST call successful value returned in body", 
@@ -55,12 +55,47 @@ export class MainComponent implements OnInit {
       });        
   }
   
+  /********************************************************************/
+  public processFile(theFile) 
+  {
+    return function(event) { 
+      var content = event.target.result; 
+      console.log (content); 
+    }
+  }
+
+  /********************************************************************/
   public onOpenFile (event)
   {
-    alert ("onFileUpload");
-    console.log(event);
+    var xmlDoc;
+    var parser;
+    var text = "<bookstore><book>" +
+                "<title>Everyday Italian</title>" +
+                "<author>Giada De Laurentiis</author>" +
+                "<year>2005</year>" +
+                "</book></bookstore>";
 
+    var textJson = '{ "employees" : [' +
+    '{ "firstName":"John" , "lastName":"Doe" },' +
+    '{ "firstName":"Anna" , "lastName":"Smith" },' +
+    '{ "firstName":"Peter" , "lastName":"Jones" } ]}';
+
+    parser = new DOMParser();
+    xmlDoc = parser.parseFromString(text,"text/xml");
+    console.log('xmldoc');
+    console.log(xmlDoc);
+
+    console.log('jsonDoc');
+    var jsonDoc = JSON.parse(textJson);
+    console.log (jsonDoc);
+
+    var f = event.files[0];
+    let fileReader = new FileReader();
+    fileReader.onloadend = this.processFile(f);
+    fileReader.readAsText(f);
   }
+
+  /********************************************************************/
   public onPciRead()
   {
     this.readPciRequest.Bar = this.readBar;
@@ -83,10 +118,7 @@ export class MainComponent implements OnInit {
       });        
   }
 
-  myUploader(event) {
-    //event.files == files to upload
-  }
-
+  /********************************************************************/
   ngOnInit() {
   }
 
