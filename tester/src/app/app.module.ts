@@ -9,6 +9,7 @@ import { ToolbarComponent } from './component/toolbar/toolbar.component';
 import { MainComponent } from './component/main/main.component';
 import { HttpClientModule } from  '@angular/common/http';
 import {FileUploadModule} from 'primeng/fileupload';
+import {DataService} from './data.service'
 
 @NgModule({
   declarations: [
@@ -24,7 +25,7 @@ import {FileUploadModule} from 'primeng/fileupload';
     //Following line is mandatory for two way binding
     FormsModule,
   ],
-  providers: [],
+  providers: [DataService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

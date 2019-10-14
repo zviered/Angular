@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpHeaderResponse} from '@angular/common/http';
 import {WritePciRequest} from '../../../icd/WritePci'
 import { ReadPciRequest } from 'src/icd/ReadPci';
+import {DataService} from '../../data.service'
 
 const BASE_URL = 'http://localhost:8000';
 
@@ -23,12 +24,15 @@ export class MainComponent implements OnInit {
 
   writePciRequest : WritePciRequest;
   readPciRequest : ReadPciRequest;
-
+  
   /********************************************************************/
-  constructor(private http: HttpClient) 
+  constructor(private http: HttpClient, svc: DataService) 
   { 
+    console.log ('constructor MainComponent');
     this.writePciRequest = new WritePciRequest;
     this.readPciRequest = new ReadPciRequest;
+    svc._fullName = 'zvika vered';
+    console.log (svc._fullName);
   }
 
   /********************************************************************/
@@ -38,7 +42,6 @@ export class MainComponent implements OnInit {
     this.writePciRequest.Data = this.writeData;
     this.writePciRequest.Offset = this.writeOffset;
  
-    //alert ('onClick');
     console.log (this.writePciRequest);
 
      var body = JSON.stringify(this.writePciRequest);

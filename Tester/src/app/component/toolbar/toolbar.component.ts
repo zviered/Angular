@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {HttpClient, HttpHeaders, HttpHeaderResponse} from '@angular/common/http';
+import {DataService} from '../../data.service'
 
 @Component({
   selector: 'app-toolbar',
@@ -8,7 +9,10 @@ import {HttpClient, HttpHeaders, HttpHeaderResponse} from '@angular/common/http'
 })
 export class ToolbarComponent implements OnInit {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private svc: DataService) { 
+    console.log ('constructor ToolbarComponent');
+    
+  }
 
   /********************************************************************/
   public onOpenFile (event)
@@ -45,7 +49,9 @@ export class ToolbarComponent implements OnInit {
       },
       () => {
           console.log("The GET observable is now completed.");
-      });        
+      });  
+      
+      console.log (this.svc._fullName);
   }
 
   ngOnInit() {
