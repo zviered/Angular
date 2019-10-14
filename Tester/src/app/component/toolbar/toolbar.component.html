@@ -1,1 +1,9 @@
 <p>toolbar works!</p>
+
+<div>
+    <br/>
+    <!-->p-fileUpload name="myfile[]" url="./upload.php"></p-fileUpload-->
+    <p-fileUpload name="myfile[]" customUpload="true" auto="true" (uploadHandler)="onOpenFile($event)" accept="text/xml"></p-fileUpload>
+    
+ </div>
+ 

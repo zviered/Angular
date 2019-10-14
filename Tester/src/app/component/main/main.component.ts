@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import {HttpClient, HttpHeaders, HttpHeaderResponse} from '@angular/common/http';
 import {WritePciRequest} from '../../../icd/WritePci'
 import { ReadPciRequest } from 'src/icd/ReadPci';
-import { animationFrame } from 'rxjs/internal/scheduler/animationFrame';
 
 const BASE_URL = 'http://localhost:8000';
 
@@ -56,74 +55,6 @@ export class MainComponent implements OnInit {
       });        
   }
   
-  /********************************************************************/
-  public processDwellFile () 
-  {
-    console.log ('processDwellFile');
-  }
-
-  /********************************************************************/
-  public processFile(theFile) 
-  {
-    this.processDwellFile ();
-    return function(event) {
-      var xmlDoc;
-      var parser; 
-      var content = event.target.result; 
-      //console.log (content); 
-
-      parser = new DOMParser();
-      xmlDoc = parser.parseFromString(content,"text/xml");
-      console.log(xmlDoc);
-      //this.processDwellFile ();
-    }
-    console.log ('<--processFile');
-  }
-
-  /********************************************************************/
-  public onOpenFile (event)
-  {
-    var xmlDoc;
-    var parser;
-    var text = "<bookstore><book>" +
-                "<title>Everyday Italian</title>" +
-                "<author>Giada De Laurentiis</author>" +
-                "<year>2005</year>" +
-                "</book></bookstore>";
-
-    var textJson = '{ "employees" : [' +
-    '{ "firstName":"John" , "lastName":"Doe" },' +
-    '{ "firstName":"Anna" , "lastName":"Smith" },' +
-    '{ "firstName":"Peter" , "lastName":"Jones" } ]}';
-
-    parser = new DOMParser();
-    xmlDoc = parser.parseFromString(text,"text/xml");
-    console.log('xmldoc');
-    console.log(xmlDoc);
-
-    console.log('jsonDoc');
-    var jsonDoc = JSON.parse(textJson);
-    console.log (jsonDoc);
-
-    //var f = event.files[0];
-    //let fileReader = new FileReader();
-    //fileReader.onloadend = this.processFile(this);
-    //fileReader.readAsText(f);
-
-    this.http.get ('http://localhost:80/api/dwell.xml',{ responseType: 'text' }).subscribe(
-      (val) => {
-          console.log("GET call successful value returned in body", 
-                      val);
-      },
-      response => {
-          console.log("GET call in error", response);
-      },
-      () => {
-          console.log("The GET observable is now completed.");
-      });        
-
-  }
-
   /********************************************************************/
   public onPciRead()
   {
