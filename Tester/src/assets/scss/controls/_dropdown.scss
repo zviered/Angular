@@ -1,0 +1,49 @@
+@import "../../../assets/scss/colors";
+
+.ui-dropdown {
+  border-radius: 2px;
+  border: 1px solid $drop-down-border;
+  width: 117px;
+  min-width: 117px !important;
+  height: 30px;
+  font-size: 12px;
+  box-shadow: inset 0 -2px 0 rgba(16, 18, 48, 0.2);
+  display: flex !important;
+  align-items: center;
+  background-color: white;
+
+  &:hover, &:disabled, &.ui-dropdown-open {
+    box-shadow: none;
+  }
+
+  .ui-dropdown-label {
+    padding-left: 13px;
+
+    &.ui-placeholder {
+      color: inherit;
+    }
+  }
+
+  .ui-dropdown-panel {
+    .ui-dropdown-items-wrapper {
+      background-color: white;
+      box-shadow: none;
+
+      .ui-dropdown-items {
+
+        .ui-dropdown-item {
+          padding: 5px 12px;
+          &:hover, &:focus {
+            background-color: $drop-down-item-background;
+          }
+        }
+      }
+    }
+  }
+
+  .ui-dropdown-trigger {
+    .ui-dropdown-trigger-icon {
+      left: 25%
+    }
+  }
+}

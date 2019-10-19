@@ -1,1 +1,44 @@
-/* You can add global styles to this file, and also import other style files */
+/* Add application styles & imports to this file! */
+@import './assets/scss/controls/controls';
+
+.drop-item {
+    display: flex;
+    flex-direction: row;
+    border-bottom:1px solid #D5D5D5;
+    padding: 5px;
+  }
+  
+  .drop-item-label {
+    flex-grow: 1;
+  }
+  
+  .drop-item-value {
+    flex: 0 0 120px;
+    margin-left: 10px;
+  }
+  
+  .item-disabled {
+    padding: 0px;
+  }
+  
+  .item-title {
+    background-color: lightgray;
+    /*background-color: #186ba0;*/
+    color: white;
+  }
+  
+  
+  .item-value1 {
+    display: block;
+    font-weight: bold;
+    padding-bottom: 5px;
+  }
+  
+  .item-drop1 {
+    border-bottom: 1px solid #D5D5D5;
+    padding: 10px;
+    /*
+    padding-top: 10px;
+    padding-bottom: 10px;
+    */
+  }

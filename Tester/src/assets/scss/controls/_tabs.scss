@@ -1,0 +1,68 @@
+@import "../../../assets/scss/colors";
+
+.ui-tabmenu {
+  margin: 0;
+
+  .ui-tabmenu-nav {
+    padding: 0 !important;
+
+    .ui-tabmenuitem {
+      font-size: 12px;
+      font-weight: 400;
+      margin: 0 5px ;
+      top: 0 ;
+
+      .ui-menuitem-link {
+        .tab-label {
+          text-transform: capitalize;
+          color: $tab-text-regular;
+        }
+      }
+
+      &.ui-state-active {
+        background-color: $tab-background;
+        color: black;
+        font-weight: 700;
+      }
+
+      &.ui-state-disabled {
+        opacity: 0.3;
+      }
+
+      &:hover {
+        &:not([class*="ui-state-disabled"]) {
+          color: black;
+          font-weight: 700;
+        }
+      }
+    }
+  }
+
+  &.main {
+    background-color: white;
+    .ui-tabmenuitem {
+      border-top: 2px solid transparent;
+
+      &.ui-state-active {
+        box-shadow: 0 1px 0 0 $tab-background;
+        border-left: 1px solid $tabs-background-border;
+        border-right: 1px solid $tabs-background-border;
+        border-top: 2px solid $tab-border-primary;
+      }
+    }
+  }
+
+  &.sub {
+    background-color: $tab-background;
+    .ui-tabmenuitem {
+      border-bottom: 4px solid transparent;
+      margin: 0;
+      &.ui-state-active {
+        border-bottom: 4px solid $tab-border-primary;
+      }
+      a {
+        padding: 6px 16px !important;
+      }
+    }
+  }
+}

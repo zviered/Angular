@@ -1,0 +1,85 @@
+@import "../../../assets/scss/colors";
+
+.ui-table {
+
+  .ui-table-wrapper {
+    table {
+      width: inherit !important;
+
+      .ui-table-thead {
+        background-color: $table-columns-background;
+        font-size: 10px;
+        color: $table-columns-headers;
+        border: 1px solid $table-columns-background;
+        text-align: center;
+
+        th {
+          padding: 10px 8px;
+          width: 75px;
+
+          span {
+            display: inline-table;
+            text-align: left;
+          }
+        }
+      }
+
+      .ui-table-tbody {
+        background-color: white;
+
+        td {
+          padding: 0;
+          height: 38px;
+          border: 1px solid $table-border-regular;
+          font-size: 12px;
+          color: $table-row-text;
+          cursor: pointer;
+          user-select: none;
+
+          .cell-content {
+            height: 37px;
+            width: 75px;
+            border: 1px solid transparent;
+            padding: 13px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+
+            &.icon {
+              font-size: 16px;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+            }
+
+            &:hover {
+              &:not([class*='first-column']) {
+                background-color: $table-row-hover-background;
+                border: 1px solid $table-row-hover-border;
+
+                &:active {
+                  border: 1px solid $table-row-pressed-border;
+                }
+              }
+            }
+
+            &.first-column {
+              background-color: $table-special-column;
+              text-align: center;
+              font-weight: 600;
+            }
+          }
+        }
+      }
+
+      .ui-table-tfoot {
+        tr {
+          background-color: white;
+          border: 1px solid $table-border-regular;
+          height: 37px;
+        }
+      }
+    }
+
+  }
+}

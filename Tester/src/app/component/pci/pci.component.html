@@ -1,0 +1,28 @@
+<p-dialog header="PCI" [(visible)]="display">   
+    <div class="p-grid controls" style=width:500px>
+        <div class="p-col-3" >Bar</div>
+        <div class="p-col-3" >Offset</div>
+        <div class="p-col-3" >Data</div>
+        <div class="p-col-3" ></div>
+
+        <select [(ngModel)]="writeBar" class="p-col-3">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+        </select>
+        <input [(ngModel)]="writeOffset" class="p-col-3 p-b" type="text" pInputText>
+        <input [(ngModel)]="writeData" class="p-col-3 p-b" type="text" pInputText/>
+        <button class="p-b" type="button" (click)="onPciWrite()">Write</button>
+
+        <select [(ngModel)]="readBar" class="p-col-3">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+        </select>
+        <input [(ngModel)]="readOffset" class="p-col-3 p-b" type="text" pInputText/>
+        <input [(ngModel)]="readData" class="p-col-3 p-b" type="text" pInputText/>
+        <button class="p-b" type="button" (click)="onPciRead()">Read</button>
+   </div>
+</p-dialog>
+
+   

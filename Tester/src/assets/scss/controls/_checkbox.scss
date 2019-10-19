@@ -1,0 +1,30 @@
+@import "../../../assets/scss/colors";
+
+.ui-chkbox {
+
+  .ui-chkbox-box {
+    border-radius: 0;
+    width: 14px;
+    height: 14px;
+    border: 1px solid $check-box-border;
+    background-color: $check-box-state;
+
+    .ui-chkbox-icon {
+      margin-left: 0;
+      transform: rotate(-12deg);
+      color: $check-box-check-mark;
+    }
+
+    .ui-label-disabled {
+      background-color: $check-box-state;
+    }
+
+    &:hover {
+      background-color: $check-box-hover-background;
+    }
+
+    &.ui-state-focus {
+      box-shadow: none;
+    }
+  }
+}

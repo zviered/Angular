@@ -5,9 +5,10 @@ import { Injectable } from '@angular/core';
 })
 export class DataService {
 
-  public _fullName : string;
+  public pciObject : any;
 
   constructor() { 
-    console.log ('DataService');
+    console.log ('constructor DataService');
   }
+
 }

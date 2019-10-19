@@ -1,0 +1,21 @@
+@import "../../../assets/scss/colors";
+
+input[type='text'] {
+  width: 117px;
+  font-size: 12px;
+  border: 1px solid $input-border;
+  border-radius: 2px;
+  min-height: 26px;
+
+  &.ui-inputtext {
+    padding: 0 3px 0 13px;
+  }
+
+  &:hover {
+    background-color: $input-hover;
+  }
+
+  &:disabled {
+    background-color: $input-disabled;
+  }
+}

@@ -1,17 +1,28 @@
 import { Component, OnInit } from '@angular/core';
-import {HttpClient, HttpHeaders, HttpHeaderResponse} from '@angular/common/http';
+import {MenuItem} from 'primeng/api';
+import {HttpClient} from '@angular/common/http';
 import {DataService} from '../../data.service'
+import { PciComponent } from '../pci/pci.component';
 
 @Component({
-  selector: 'app-toolbar',
-  templateUrl: './toolbar.component.html',
-  styleUrls: ['./toolbar.component.scss']
+  selector: 'app-menu',
+  templateUrl: './menu.component.html',
+  styleUrls: ['./menu.component.scss']
 })
-export class ToolbarComponent implements OnInit {
+export class MenuComponent implements OnInit {
 
-  constructor(private http: HttpClient, private svc: DataService) { 
-    console.log ('constructor ToolbarComponent');
-    
+  items: MenuItem[];
+
+  constructor(private http: HttpClient, private svc: DataService) {
+    console.log ('constructor MenuComponent');
+  }
+
+  /********************************************************************/
+  public onPci ()
+  {
+    let pciObject : PciComponent = this.svc.pciObject;
+
+    pciObject.showDialog ();
   }
 
   /********************************************************************/
@@ -52,7 +63,24 @@ export class ToolbarComponent implements OnInit {
       });  
   }
 
+  /********************************************************************/
   ngOnInit() {
+    this.items = [
+      {
+        label: 'File',
+        items: [
+            {label: 'Open',
+            command: () => this.onOpenFile(event)} 
+        ]
+    },
+    {
+        label: 'View',
+        items: [
+            {label: 'Pci',
+            command: () => this.onPci ()},
+        ]
+    }
+  ];
   }
 
 }

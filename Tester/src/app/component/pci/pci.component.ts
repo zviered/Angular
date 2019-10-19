@@ -1,25 +1,26 @@
-import { Component, OnInit} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpHeaderResponse} from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import {HttpClient} from '@angular/common/http';
 import {WritePciRequest} from '../../../icd/WritePci'
-import { ReadPciRequest } from 'src/icd/ReadPci';
+import {ReadPciRequest } from 'src/icd/ReadPci';
 import {DataService} from '../../data.service'
 
 const BASE_URL = 'http://localhost:8000';
 
 @Component({
-  selector: 'app-main',
-  templateUrl: './main.component.html',
-  styleUrls: ['./main.component.scss']
+  selector: 'app-pci',
+  templateUrl: './pci.component.html',
+  styleUrls: ['./pci.component.scss']
 })
+export class PciComponent implements OnInit {
 
-export class MainComponent implements OnInit {
+  display: boolean = false;
 
   writeBar: number;
-  writeOffset: number;
-  writeData: number;
+  writeOffset: string;
+  writeData: string;
 
   readBar: number;
-  readOffset: number;
+  readOffset: string;
   readData: number;
 
   writePciRequest : WritePciRequest;
@@ -28,17 +29,32 @@ export class MainComponent implements OnInit {
   /********************************************************************/
   constructor(private http: HttpClient, private svc: DataService) 
   { 
-    console.log ('constructor MainComponent');
+    console.log ('constructor PciComponent');
     this.writePciRequest = new WritePciRequest;
     this.readPciRequest = new ReadPciRequest;
+
+    this.readBar = 0;
+    this.writeBar = 0;
+
+    this.writeOffset = '0x0';
+    this.writeData = '0x0';
+
+    this.readOffset = '0x0';
+
+    svc.pciObject = this;
+  }
+
+  /********************************************************************/
+  public showDialog() {
+    this.display = true;
   }
 
   /********************************************************************/
   public onPciWrite()
   {
     this.writePciRequest.Bar = this.writeBar;
-    this.writePciRequest.Data = this.writeData;
-    this.writePciRequest.Offset = this.writeOffset;
+    this.writePciRequest.Data = parseInt(this.writeData);
+    this.writePciRequest.Offset = parseInt(this.writeOffset);
  
     console.log (this.writePciRequest);
 
@@ -60,7 +76,7 @@ export class MainComponent implements OnInit {
   public onPciRead()
   {
     this.readPciRequest.Bar = this.readBar;
-    this.readPciRequest.Offset = this.readOffset;
+    this.readPciRequest.Offset = parseInt(this.readOffset);
  
     console.log (this.readPciRequest);
 

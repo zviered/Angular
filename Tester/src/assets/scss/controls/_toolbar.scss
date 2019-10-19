@@ -1,0 +1,123 @@
+@import "../colors";
+
+.ui-menubar {
+  padding: 0;
+  height: 100%;
+
+  &.regular-icons {
+    .ui-menubar-root-list {
+      .ui-menuitem {
+        .ui-menuitem-link {
+          height: 100%;
+          border-bottom: 4px solid transparent;
+
+          &:active {
+            &:not(.ui-state-disabled ) {
+              border-radius: 3px 3px 0 0;
+              background-color: $toolbar-pressed;
+              border-bottom: 4px solid $tab-border-primary;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  &.menu-icons {
+    .ui-menuitem {
+      .ui-menuitem-link {
+        height: 43px;
+      }
+
+      &:first-child {
+        margin-left: 21px;
+      }
+    }
+  }
+
+  .ui-menubar-root-list {
+    display: flex;
+    align-items: center;
+    height: 100%;
+
+    .ui-menuitem {
+      width: 36px;
+      height: 100%;
+      margin-left: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .ui-menuitem-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        padding: 0;
+
+        .ui-menuitem-icon {
+          margin: 0;
+        }
+
+        .ui-submenu-icon {
+          display: none !important;
+        }
+
+        &.ui-state-disabled {
+          opacity: 0.2;
+        }
+
+        &:hover {
+          &:not(.ui-state-disabled ) {
+            background-color: $toolbar-hover;
+          }
+        }
+      }
+
+      .ui-submenu {
+
+        .ui-submenu-list {
+          padding: 0;
+          top: 54px !important;
+          background-color: $menu-sub-items-background;
+          border-radius: 0 0 5px 5px;
+          box-shadow: 0 0 6px 1px rgba(34, 35, 36, 0.1);
+
+          .ui-menuitem {
+            margin: 0;
+            width: 100%;
+            height: 30px;
+            display: flex;
+            justify-content: flex-start;
+
+            .ui-menuitem-link {
+              color: white;
+              width: 100%;
+              height: 100%;
+              padding-left: 14px;
+              display: flex;
+              align-items: center;
+
+              .ui-menuitem-text {
+                width: 100%;
+              }
+
+              &:active {
+                background-color: $toolbar-pressed;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .ui-menu-separator {
+      background-color: $toolbar-separator;
+      padding: 1px;
+      height: 27px;
+      margin: 0 15px;
+    }
+  }
+}
+
+

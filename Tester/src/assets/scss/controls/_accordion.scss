@@ -1,0 +1,49 @@
+@import "../../../assets/scss/colors";
+
+.ui-accordion {
+  background: $accordion-background;
+  .ui-accordion-header {
+    border-bottom: 1px solid $accordion-grey;
+    border-top: none;
+    font-size: 14px;
+    color: $accordion-grey;
+    text-transform: capitalize;
+    user-select: none;
+    outline: none;
+    min-height: 35px;
+    display: flex;
+    align-items: center;
+    margin: 0;
+
+    a {
+      outline: none;
+      padding: 0 0 2px 0;
+      width: 100%;
+    }
+
+    .pi-chevron-down {
+      transform: rotate(180deg);
+    }
+
+    .ui-accordion-header-text {
+      padding-left: 3px;
+    }
+
+    &:hover {
+      color: $drop-down-hover;
+    }
+
+    &:active, &.ui-state-active {
+      color: $accordion-grey;
+    }
+  }
+
+  .ui-accordion-content {
+    color: $accordion-grey-content;
+    font-size: 12px;
+    padding: 20px 0 15px 20px;
+  }
+
+}
+
+
