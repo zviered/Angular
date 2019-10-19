@@ -14,7 +14,7 @@ import { ToolbarComponent } from './component/toolbar/toolbar.component';
 import { MainComponent } from './component/main/main.component';
 import { HttpClientModule } from  '@angular/common/http';
 import { FileUploadModule} from 'primeng/fileupload';
-import { DataService} from './data.service';
+import {DataService} from 'src/app/service/data.service'
 
 import { PciComponent } from './component/pci/pci.component';
 import { MenuComponent } from './component/menu/menu.component';

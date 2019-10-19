@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import {HttpClient, HttpHeaders, HttpHeaderResponse} from '@angular/common/http';
-import {DataService} from '../../data.service'
 
 @Component({
   selector: 'app-toolbar',
@@ -9,7 +8,7 @@ import {DataService} from '../../data.service'
 })
 export class ToolbarComponent implements OnInit {
 
-  constructor(private http: HttpClient, private svc: DataService) { 
+  constructor(private http: HttpClient) { 
     console.log ('constructor ToolbarComponent');
     
   }

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {WritePciRequest} from '../../../icd/WritePci'
 import {ReadPciRequest } from 'src/icd/ReadPci';
-import {DataService} from '../../data.service'
+import {DataService} from 'src/app/service/data.service'
 
 const BASE_URL = 'http://localhost:8000';
 

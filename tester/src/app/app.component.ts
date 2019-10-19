@@ -1,7 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { ToolbarComponent} from 'src/app/component/toolbar/toolbar.component';
 import { MainComponent} from 'src/app/component/main/main.component';
-import { DataService} from './data.service'
+import { DataService} from 'src/app/service/data.service'
+import { SysconfigService} from './service/sysconfig.service'
 
 @Component({
   selector: 'app-root',
@@ -14,7 +15,7 @@ export class AppComponent {
    mainComponent : MainComponent;
 
 
-  constructor(svc: DataService) {
+  constructor(svc: DataService, cfg: SysconfigService) {
     console.log ('constructor AppComponent');
    }
   title = 'Tester';

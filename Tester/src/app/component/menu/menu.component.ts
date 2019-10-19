@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {MenuItem} from 'primeng/api';
 import {HttpClient} from '@angular/common/http';
-import {DataService} from '../../data.service'
+import {DataService} from 'src/app/service/data.service'
 import { PciComponent } from '../pci/pci.component';
 
 @Component({
