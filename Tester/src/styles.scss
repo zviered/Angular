@@ -1,44 +1,26 @@
-/* Add application styles & imports to this file! */
+@import "./assets/scss/reset";
 @import './assets/scss/controls/controls';
+@import 'assets/images/icons/sprite.scss';
 
-.drop-item {
-    display: flex;
-    flex-direction: row;
-    border-bottom:1px solid #D5D5D5;
-    padding: 5px;
+@include sprites($spritesheet-sprites);
+
+[class*="icon-"] {
+  display: inline-block;
+  font-style: normal;
+  color: inherit;
+  i:before {
+    font-style: normal;
+    font-weight: normal !important;
+    vertical-align: top;
   }
-  
-  .drop-item-label {
-    flex-grow: 1;
-  }
-  
-  .drop-item-value {
-    flex: 0 0 120px;
-    margin-left: 10px;
-  }
-  
-  .item-disabled {
-    padding: 0px;
-  }
-  
-  .item-title {
-    background-color: lightgray;
-    /*background-color: #186ba0;*/
-    color: white;
-  }
-  
-  
-  .item-value1 {
-    display: block;
-    font-weight: bold;
-    padding-bottom: 5px;
-  }
-  
-  .item-drop1 {
-    border-bottom: 1px solid #D5D5D5;
-    padding: 10px;
-    /*
-    padding-top: 10px;
-    padding-bottom: 10px;
-    */
-  }
+
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  font-family: "Open Sans", sans-serif !important;
+  font-size: 12px;
+  overflow: hidden;
+}
+

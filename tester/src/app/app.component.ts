@@ -17,6 +17,9 @@ export class AppComponent {
 
   constructor(svc: DataService, cfg: SysconfigService) {
     console.log ('constructor AppComponent');
+
+    console.log (cfg.ReadConfiguration ());
+
    }
   title = 'Tester';
 

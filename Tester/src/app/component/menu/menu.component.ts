@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import {MenuItem} from 'primeng/api';
 import {HttpClient} from '@angular/common/http';
 import {DataService} from 'src/app/service/data.service'
@@ -12,7 +12,9 @@ import { PciComponent } from '../pci/pci.component';
 export class MenuComponent implements OnInit {
 
   items: MenuItem[];
+  @ViewChild('fileInput', {static: false}) fileInputRef: ElementRef;
 
+  /********************************************************************/
   constructor(private http: HttpClient, private svc: DataService) {
     console.log ('constructor MenuComponent');
   }
@@ -26,9 +28,31 @@ export class MenuComponent implements OnInit {
   }
 
   /********************************************************************/
-  public onOpenFile (event)
+  public OnFileSelected (event)
   {
-    var xmlDoc;
+    let fileList: FileList = event.target.files;
+
+    this.http.get ('http://localhost:80/api/'+fileList[0].name,{ responseType: 'text' }).subscribe(
+      (val) => {
+          console.log("GET call successful value returned in body", 
+                      val);
+      },
+      response => {
+          console.log("GET call in error", response);
+      },
+      () => {
+          console.log("The GET observable is now completed.");
+      }); 
+
+  }
+  
+  /********************************************************************/
+  public onOpenFile (event) 
+  {
+    //open select file dialog
+    this.fileInputRef.nativeElement.click (event);
+
+    /*var xmlDoc;
     var parser;
     var text = "<bookstore><book>" +
                 "<title>Everyday Italian</title>" +
@@ -48,9 +72,9 @@ export class MenuComponent implements OnInit {
 
     console.log('jsonDoc');
     var jsonDoc = JSON.parse(textJson);
-    console.log (jsonDoc);
+    console.log (jsonDoc);*/
 
-    this.http.get ('http://localhost:80/api/dwell.xml',{ responseType: 'text' }).subscribe(
+    /*this.http.get ('http://localhost:80/api/dwell.xml',{ responseType: 'text' }).subscribe(
       (val) => {
           console.log("GET call successful value returned in body", 
                       val);
@@ -60,7 +84,7 @@ export class MenuComponent implements OnInit {
       },
       () => {
           console.log("The GET observable is now completed.");
-      });  
+      });  */
   }
 
   /********************************************************************/
@@ -82,5 +106,4 @@ export class MenuComponent implements OnInit {
     }
   ];
   }
-
 }

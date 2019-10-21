@@ -7,6 +7,8 @@ import {HttpClient} from '@angular/common/http';
 
 export class SysconfigService {
 
+  sysConfig : any;
+  
   /*************************************************************************************/
   private xml2json(srcDOM) {
 
@@ -28,35 +30,37 @@ export class SysconfigService {
   }
 
   /*************************************************************************************/
-  private ReadConfiguration () : any
+  public async ReadConfiguration () 
   {
-    this.http.get ('http://localhost:80/api/Target.xml',{ responseType: 'text' }).subscribe(
+      /*await this.http.get ('http://localhost:80/api/Target.xml',{ responseType: 'text' }).subscribe(
       (val) => {
           console.log("GET call successful value returned in body", val);
                       
           const parser = new DOMParser();
           const srcDOM = parser.parseFromString(val, "application/xml");
-          console.log(this.xml2json (srcDOM));
-          
+          this.sysConfig = this.xml2json (srcDOM);
       },
       response => {
           console.log("GET call in error", response);
       },
       () => {
           console.log("The GET observable is now completed.");
-      }); 
-      
-      console.log ('Here');
+      }); */
 
+    this.sysConfig = await this.http.get('http://localhost:80/api/Target.xml',{ responseType: 'text' }).toPromise();
+    /*.then((data: any) => {
+     
+      console.time('request-length');
+      console.log(data);
+      console.timeEnd('request-length');
+
+    });*/
+    console.log(this.sysConfig);
   }
 
   /*************************************************************************************/
   constructor(private http: HttpClient) {
-  
-    var xml,res, text;
-  
-    console.log ('constructor SysconfigService');
-    text = this.ReadConfiguration ();
-    //console.log (text);
+   console.log ('constructor SysconfigService');
+   console.log (this.sysConfig);
   }
 }

@@ -6,3 +6,21 @@ p {
   .p-b{
     margin-left: 10px;
   }
+
+  @import "../../../assets/scss/colors";
+:host {
+
+  display: block;
+
+  .controls {
+
+    &__elements-container {
+      padding: 5px;
+    }
+
+    ui-table {
+      display: block;
+      padding: 5px;
+    }
+  }
+}
